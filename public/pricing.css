@@ -1,0 +1,16 @@
+.custom-days{color-scheme:dark}
+.custom-days .stepper input[type=number]{appearance:textfield;-moz-appearance:textfield;background:#2b2030;border:1px solid #79536d;border-radius:5px;color:#f5cde7;caret-color:var(--accent);box-shadow:inset 0 1px 3px #100b1555}
+.custom-days .stepper input[type=number]::-webkit-inner-spin-button,.custom-days .stepper input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.custom-days .stepper input[type=number]:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.custom-days .days-range{appearance:none;-webkit-appearance:none;display:block;width:100%;height:24px;margin:10px 0 0;padding:0;border:0;background:transparent;accent-color:var(--accent);cursor:pointer;touch-action:pan-y;border-radius:5px}
+.days-range::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(to right,var(--accent) 0 var(--range-progress,8%),#513749 var(--range-progress,8%) 100%);box-shadow:inset 0 1px 2px #0d081355,0 0 0 1px #87607b33}
+.days-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;margin-top:-5px;border:2px solid #3b2135;border-radius:50%;background:var(--accent);box-shadow:0 0 0 1px #d995bb,0 2px 5px #08050b80;transition:box-shadow .16s ease,transform .16s ease}
+.days-range::-moz-range-track{height:6px;border-radius:6px;background:#513749;box-shadow:inset 0 1px 2px #0d081355}
+.days-range::-moz-range-progress{height:6px;border-radius:6px;background:var(--accent)}
+.days-range::-moz-range-thumb{width:13px;height:13px;border:2px solid #3b2135;border-radius:50%;background:var(--accent);box-shadow:0 0 0 1px #d995bb,0 2px 5px #08050b80;transition:box-shadow .16s ease,transform .16s ease}
+.days-range:hover::-webkit-slider-thumb,.days-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 1px var(--accent),0 0 0 5px #f4add419}
+.days-range:hover::-moz-range-thumb,.days-range:focus-visible::-moz-range-thumb{box-shadow:0 0 0 1px var(--accent),0 0 0 5px #f4add419}
+.days-range:active::-webkit-slider-thumb{transform:scale(1.12)}
+.days-range:active::-moz-range-thumb{transform:scale(1.12)}
+.custom-days .days-range:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.days-range::-webkit-slider-thumb{transition:none}.days-range::-moz-range-thumb{transition:none}.days-range:active::-webkit-slider-thumb{transform:none}.days-range:active::-moz-range-thumb{transform:none}}

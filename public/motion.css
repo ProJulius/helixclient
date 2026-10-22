@@ -1,0 +1,33 @@
+/* Small, interruptible interaction feedback. Geometry stays identical. */
+:root{--motion-fast:160ms;--motion-base:230ms;--motion-ease:cubic-bezier(.22,.8,.25,1)}
+.button,.chip,.category-card,.icon-button,.hamburger,.theme-orb,.preview-button{transition:transform var(--motion-fast) var(--motion-ease),filter var(--motion-fast) ease,box-shadow var(--motion-fast) ease,background-color var(--motion-base) ease,border-color var(--motion-base) ease,color var(--motion-base) ease;touch-action:manipulation}
+.button:active,.chip:active,.category-card:active,.icon-button:active,.hamburger:active,.preview-button:active{transform:translateY(1px) scale(.975);filter:brightness(.95)}
+.theme-orb:active{transform:scale(.9)}
+.button:active{box-shadow:inset 0 0 0 1px #76546f,inset 0 2px 5px #0a050c55,0 1px 2px #08050b80}
+.button .icon{transition:transform var(--motion-base) var(--motion-ease)}
+.button:hover .icon:last-child{transform:translateX(2px)}
+.button:active .icon:last-child{transform:translateX(0)}
+.navlinks a{transition:color var(--motion-base) ease,opacity var(--motion-base) ease}
+.navlinks a:after,.navlinks a.active:after{content:'';display:block;position:absolute;bottom:-9px;left:0;width:100%;height:1px;border-radius:2px;background:var(--accent);opacity:0;transform:scaleX(.4);transform-origin:center;transition:opacity var(--motion-base) ease,transform var(--motion-base) var(--motion-ease)}
+.navlinks a:hover:after,.navlinks a.active:after{opacity:.75;transform:scaleX(1)}
+.press-surface{position:relative;isolation:isolate;overflow:hidden}
+.click-glow{position:absolute;pointer-events:none;display:block;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 45%,transparent),color-mix(in srgb,var(--accent) 15%,transparent) 55%,transparent 72%);z-index:2;opacity:0;transform-origin:center}
+.theme-menu:not([hidden]){animation:menu-arrive 180ms var(--motion-ease) both;transform-origin:top left}
+dialog[open]{animation:dialog-arrive 230ms var(--motion-ease) both}
+dialog[open].drawer{animation:drawer-arrive 250ms var(--motion-ease) both}
+dialog[open]::backdrop{animation:backdrop-arrive 180ms ease both}
+.faq-item summary{transition:color var(--motion-fast) ease}
+.faq-item summary:hover,.faq-item[open] summary{color:var(--accent)}
+.faq-item[open] p{animation:answer-arrive 220ms var(--motion-ease) both}
+.board-module,.board-switch,.board-switch:after{transition:background-color var(--motion-fast) ease,color var(--motion-fast) ease,opacity var(--motion-fast) ease}
+@keyframes menu-arrive{from{opacity:0;transform:translateY(-5px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes dialog-arrive{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes drawer-arrive{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes backdrop-arrive{from{opacity:0}to{opacity:1}}
+@keyframes answer-arrive{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){
+ .button,.chip,.category-card,.icon-button,.hamburger,.theme-orb,.preview-button,.button .icon,.navlinks a,.navlinks a:after,.board-module,.board-switch,.board-switch:after,.faq-item summary{transition:none!important}
+ .button:active,.chip:active,.category-card:active,.icon-button:active,.hamburger:active,.theme-orb:active,.preview-button:active,.button:hover .icon:last-child{transform:none}
+ .click-glow{display:none!important}
+ .theme-menu:not([hidden]),dialog[open],dialog[open].drawer,dialog[open]::backdrop,.faq-item[open] p{animation:none!important}
+}

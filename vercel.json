@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "node scripts/build-vercel.mjs",
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.mjs": { "maxDuration": 30 }
+  },
+  "rewrites": [
+    { "source": "/api/discord/:action", "destination": "/api?__discord_action=:action" }
+  ]
+}
