@@ -11,7 +11,7 @@
   if (!C.copy.nav[language]) language = 'en';
   let billing = C.pricing.defaultBilling;
   let days = C.pricing.defaultDays;
-  let activeCategory = 'Visual';
+  let activeCategory = 'Render';
   let catalogCategory = 'All';
   let catalogQuery = '';
   let showcaseFilter = 'All';
@@ -62,7 +62,7 @@
   }
   reducedMotion.addEventListener('change', event => { if (event.matches) clearMotion(); });
   const toggles = storage.read('toggles', {});
-  const modules = C.modules.map(([name, category, description], i) => ({ id: `module-${i}`, name, category, description, premium: category === 'Premium', icon: C.categories.find(c => c.id === category)?.icon || 'grid' }));
+  const modules = C.modules.map(m => ({ ...m, icon: C.categories.find(c => c.id === m.category)?.icon || 'grid' }));
   const categories = C.categories.map(c => ({ ...c, count: modules.filter(m => m.category === c.id).length }));
   const ui = key => C.copy.ui[language][key] ?? C.copy.ui.en[key] ?? key;
   const nav = key => C.copy.nav[language][key] ?? C.copy.nav.en[key] ?? key;
@@ -87,7 +87,7 @@
     heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>'
   };
   const icon = name => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${iconPaths[name] || iconPaths.grid}</svg>`;
-  const mark = () => '<svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="currentColor" style="color:var(--accent)"/><path d="M21 18v28m22-28v28M21 32h22" stroke="#351e30" stroke-width="7" stroke-linecap="round"/></svg>';
+  const mark = () => '<img class="mark" src="/helix-logo.png" alt="" width="40" height="40" decoding="async">';
   const brand = () => `<a class="brand" href="#home" aria-label="${esc(C.brand.title)} home">${mark()}<span>helix<span>client</span></span></a>`;
   const btn = (label, href, primary = false, glyph = 'arrow', extra = '') => `<a class="button${primary ? ' primary' : ''}" href="${esc(href)}" ${extra}>${esc(label)}${icon(glyph)}</a>`;
   const eyebrow = text => `<p class="eyebrow">${esc(text)}</p>`;
@@ -139,7 +139,7 @@
   async function fetchReviews() { return reviewData(); }
   async function fetchReleases() { return C.releases; }
   async function beginDiscordLogin() { if (discordSession.configured) window.open(C.discord.apiBase + '/login?next=' + (currentPage === 'downloads' ? 'downloads' : 'dashboard'), '_top'); else toast(C.copy.notices.oauth); }
-  async function beginCheckout() { const url = safeLink(C.links.checkout); if (url && !C.pricing.monthlyIsExample && !C.product.catalogIsPreview) window.location.assign(url); else toast(C.copy.notices.checkout); }
+  async function beginCheckout() { const url = safeLink(C.links.checkout); if (url) window.location.assign(url); else toast(C.copy.notices.checkout); }
   window.HelixAPI = { fetchDiscordStats, fetchReviews, fetchReleases, fetchDiscordSession, beginDiscordLogin, beginCheckout };
 
   function toast(message) { clearTimeout(toastTimer); const el = $('#toast'); el.textContent = message; el.classList.add('visible'); toastTimer = setTimeout(() => el.classList.remove('visible'), 6500); }
@@ -155,7 +155,7 @@
 
   function renderHeader() {
     const p = C.copy.referenceLayout;
-    const items = [{ id: 'features', label: language === 'de' ? 'Funktionen' : 'Features', href: '#features' }, { id: 'showcases', label: 'Showcases', href: '#/showcases' }, { id: 'reviews', label: language === 'de' ? 'Bewertungen' : 'Reviews', href: '#reviews' }, { id: 'pricing', label: nav('pricing'), href: '#pricing' }, { id: 'discord', label: 'Discord', href: '#community', action: 'join-discord' }];
+    const items = [{ id: 'features', label: language === 'de' ? 'Funktionen' : 'Features', href: '#features' }, { id: 'showcases', label: 'Showcases', href: '#/showcases' }, { id: 'reviews', label: language === 'de' ? 'Bewertungen' : 'Reviews', href: C.links.reviews }, { id: 'pricing', label: nav('pricing'), href: '#pricing' }, { id: 'discord', label: 'Discord', href: '#community', action: 'join-discord' }];
     $('#header').innerHTML = '<div class="navbar reference-navbar"><div class="nav-brand">' + brand() + '<div class="language theme-picker"><button class="theme-orb language-toggle" data-action="language-menu" aria-label="Site colour and language" aria-controls="language-menu" aria-expanded="false"></button><div class="language-menu theme-menu" id="language-menu" hidden><span class="eyebrow">' + esc(p.themeLabel) + '</span><div class="theme-swatches"><button data-theme="#f4add4" style="--swatch:#f4add4" aria-label="Pink"></button><button data-theme="#c4aafa" style="--swatch:#c4aafa" aria-label="Lavender"></button><button data-theme="#a9d9fc" style="--swatch:#a9d9fc" aria-label="Ice blue"></button><label class="custom-color">Custom<input id="custom-theme" type="color" value="' + esc(C.brand.colors.accent) + '" aria-label="Custom accent colour"></label></div><button data-theme="reset">' + esc(p.themeReset) + '</button><div class="locale-options"><button data-language="en">EN · English</button><button data-language="de">DE · Deutsch</button></div><button class="theme-mobile-navigation" data-action="mobile-menu">Explore Helix →</button></div></div></div><nav class="navlinks" aria-label="Main navigation">' + items.map(i => '<a href="' + i.href + '" data-nav="' + i.id + '"' + (i.action ? ' data-action="' + i.action + '"' : '') + '>' + esc(i.label) + '</a>').join('') + '</nav><div class="nav-actions"><a class="button ghost small-btn" href="#/dashboard">' + icon('grid') + esc(nav('dashboard')) + '</a><a class="button primary small-btn" href="#pricing">' + esc(nav('get')) + icon('arrow') + '</a><button class="hamburger" data-action="mobile-menu" aria-label="Open navigation" aria-haspopup="dialog">' + icon('menu') + '</button></div></div>';
     $('.navbar').lang = language;
   }
@@ -190,14 +190,15 @@
   }
   function reviewSection() {
     const reviews = reviewData();
-    if (!reviews.length) return `<div class="review-empty">${icon('star')}<h3>${esc(C.copy.reviewEmpty)}</h3><p>${esc(C.copy.reviewEmptyText)}</p>${btn(ui('review'), '#/dashboard', false, 'arrow')}</div>`;
+    if (!reviews.length) return `<div class="review-empty">${icon('star')}<h3>${esc(C.copy.reviewEmpty)}</h3><p>${esc(C.copy.reviewEmptyText)}</p>${btn(ui('review'), C.links.reviews, false, 'arrow')}</div>`;
     const average = reviews.reduce((a, r) => a + Math.max(1, Math.min(5, Number(r.rating) || 1)), 0) / reviews.length;
-    return `<div class="rating-summary center"><strong>${average.toFixed(1)}</strong><span class="stars" aria-label="${average.toFixed(1)} out of 5 stars">★★★★★</span><p class="small">from ${reviews.length} ${C.DEV_SAMPLE_DATA ? 'sample ' : ''}reviews</p></div><div class="review-grid">${reviews.slice(0, showAllReviews ? reviews.length : 3).map(r => `<article class="review-card"><div class="review-author">${mark()}<div><strong>${r.sample ? 'SAMPLE · ' : ''}${esc(r.name)}</strong><small>${esc(r.date)}</small></div></div><span class="stars" aria-label="${Math.max(1, Math.min(5, Number(r.rating) || 1))} out of 5 stars">${'★'.repeat(Math.max(1, Math.min(5, Number(r.rating) || 1)))}</span><p>${esc(r.text)}</p></article>`).join('')}</div><div class="actions" style="margin-top:25px">${reviews.length > 3 ? `<button class="button" data-action="all-reviews">${showAllReviews ? 'Show fewer' : `Show all ${reviews.length}`}</button>` : ''}${btn(ui('review'), '#/dashboard')}</div>`;
+    return `<div class="rating-summary center"><strong>${average.toFixed(1)}</strong><span class="stars" aria-label="${average.toFixed(1)} out of 5 stars">★★★★★</span><p class="small">from ${reviews.length} ${C.DEV_SAMPLE_DATA ? 'sample ' : ''}reviews</p></div><div class="review-grid">${reviews.slice(0, showAllReviews ? reviews.length : 3).map(r => `<article class="review-card"><div class="review-author">${mark()}<div><strong>${r.sample ? 'SAMPLE · ' : ''}${esc(r.name)}</strong><small>${esc(r.date)}</small></div></div><span class="stars" aria-label="${Math.max(1, Math.min(5, Number(r.rating) || 1))} out of 5 stars">${'★'.repeat(Math.max(1, Math.min(5, Number(r.rating) || 1)))}</span><p>${esc(r.text)}</p></article>`).join('')}</div><div class="actions" style="margin-top:25px">${reviews.length > 3 ? `<button class="button" data-action="all-reviews">${showAllReviews ? 'Show fewer' : `Show all ${reviews.length}`}</button>` : ''}${btn(ui('review'), C.links.reviews)}</div>`;
   }
   function plans() {
     const p = C.copy, r = p.referenceLayout;
     const featureList = features => '<ul class="plan-features">' + features.map(f => '<li>' + icon('check') + esc(f) + '</li>').join('') + '</ul>';
-    return '<div class="plans reference-plans"><article class="plan"><p class="plan-name">' + esc(r.basicName) + '</p><div class="plan-price">' + euro(0) + '</div><p class="plan-subtitle">Free. Yours to make your own.</p>' + featureList(p.basic.features) + '<a class="button full" href="#/downloads">' + esc(p.basic.cta) + '</a></article><article class="plan monthly-plan"><p class="plan-name">' + esc(r.monthlyName) + '</p><div class="plan-price">' + euro(C.pricing.dailyCents * C.pricing.daysInMonth / 100) + '</div><p class="plan-subtitle">' + C.pricing.daysInMonth + ' days access · ' + euro(C.pricing.dailyCents / 100) + ' per day</p>' + customDays() + featureList([...p.premium.features, p.premium.monthlyFeature]) + '<p class="lifetime-nudge">Lifetime is the better deal.</p><button class="button full" data-action="checkout">' + esc(p.premium.cta) + '</button></article><article class="plan featured"><span class="plan-tag">Best value</span><p class="plan-name">' + esc(r.lifetimeName) + '</p><div class="plan-price">' + euro(C.pricing.lifetimeEUR) + '</div><p class="plan-subtitle">One purchase. Lifetime Premium access.</p>' + featureList([...p.premium.features, p.premium.lifetimeFeature]) + '<button class="button full premium-checkout" data-action="checkout">' + esc(p.premium.cta) + '</button></article></div><div class="how-buy reference-buy">' + eyebrow('HOW TO BUY') + '<div class="buy-step-grid">' + r.buy.map((s, i) => '<div><span>' + (i + 1) + '</span>' + esc(s) + '</div>').join('') + '</div><p>' + esc(r.buyNote) + '</p><p class="legal-note">' + esc(C.legal.warning) + ' · Discord account required at checkout. <a href="#/cancellation">Cancellation & withdrawal</a>.</p></div>';
+    const shopButton = extra => '<a class="button full ' + extra + '" href="' + esc(C.links.checkout) + '" target="_top">' + esc(p.premium.cta) + '</a>';
+    return '<div class="plans reference-plans"><article class="plan"><p class="plan-name">' + esc(r.basicName) + '</p><div class="plan-price license-ready">Ready.</div><p class="plan-subtitle">Your license. Your next session.</p>' + featureList(p.basic.features) + '<a class="button full" href="#/dashboard">' + esc(p.basic.cta) + '</a></article><article class="plan monthly-plan"><p class="plan-name">' + esc(r.monthlyName) + '</p><div class="plan-price">' + euro(C.pricing.dailyCents * C.pricing.daysInMonth / 100) + '</div><p class="plan-subtitle">' + C.pricing.daysInMonth + ' days access · ' + euro(C.pricing.dailyCents / 100) + ' per day</p>' + customDays() + featureList([...p.premium.features, p.premium.monthlyFeature]) + '<p class="lifetime-nudge">Choose your license in our store.</p>' + shopButton('') + '</article><article class="plan featured"><span class="plan-tag">Best value</span><p class="plan-name">' + esc(r.lifetimeName) + '</p><div class="plan-price">' + euro(C.pricing.lifetimeEUR) + '</div><p class="plan-subtitle">One purchase. Lifetime Premium access.</p>' + featureList([...p.premium.features, p.premium.lifetimeFeature]) + shopButton('premium-checkout') + '</article></div><div class="how-buy reference-buy">' + eyebrow('HOW TO BUY') + '<div class="buy-step-grid">' + r.buy.map((s, i) => '<div><span>' + (i + 1) + '</span>' + esc(s) + '</div>').join('') + '</div><p>' + esc(r.buyNote) + '</p><p class="legal-note">Purchases and payments are handled on SellAuth. <a href="#/dashboard">Open your dashboard</a>.</p></div>';
   }
   function customDays() {
     return '<div class="custom-days"><label for="custom-days">Choose custom amount</label><div class="stepper"><input id="custom-days" type="number" min="' + C.pricing.minimumDays + '" max="' + C.pricing.maximumDays + '" step="' + C.pricing.dayStep + '" value="' + days + '" aria-label="Number of Premium days"><span>days</span><span class="custom-equals">=</span><strong id="days-total" aria-live="polite"></strong></div><input class="days-range" id="custom-days-range" type="range" min="' + C.pricing.minimumDays + '" max="' + C.pricing.maximumDays + '" step="' + C.pricing.dayStep + '" value="' + days + '" aria-label="Choose Premium days" aria-describedby="days-unit"><p class="custom-per-day" id="days-unit"></p></div>';
@@ -222,7 +223,7 @@
   }
   function catalogCards() {
     const results = modules.filter(m => (catalogCategory === 'All' || m.category === catalogCategory) && `${m.name} ${m.description} ${m.category}`.toLowerCase().includes(catalogQuery.toLowerCase()));
-    return results.length ? results.map(m => `<button class="catalog-module" data-detail="${m.id}">${icon(m.icon)}<span class="badge ${m.premium ? '' : 'free'}">${m.premium ? 'PREMIUM' : 'FREE'}</span><h3>${esc(m.name)}</h3><p>${esc(m.description)}</p></button>`).join('') : '<div class="no-results"><h3>No modules found.</h3><p class="small" style="margin-top:12px">Try a different search or category.</p></div>';
+    return results.length ? results.map(m => `<button class="catalog-module" data-detail="${m.id}">${icon(m.icon)}<span class="badge">${esc(m.category.toUpperCase())}</span><h3>${esc(m.name)}</h3><p>${esc(m.description)}</p></button>`).join('') : '<div class="no-results"><h3>No modules found.</h3><p class="small" style="margin-top:12px">Try a different search or category.</p></div>';
   }
   function modulesPage() {
     const p = C.copy;
@@ -231,13 +232,13 @@
   function updateCatalog() {
     $('#catalog-grid').innerHTML = catalogCards();
     const count = $$('.catalog-module').length;
-    $('#results-meta').textContent = `${count} module concept${count === 1 ? '' : 's'}${catalogQuery ? ` matching “${catalogQuery}”` : ''}`;
+    $('#results-meta').textContent = `${count} module${count === 1 ? '' : 's'}${catalogQuery ? ` matching “${catalogQuery}”` : ''}`;
     $$('[data-filter]').forEach(b => { const selected = b.dataset.filter === catalogCategory; b.classList.toggle('active', selected); b.setAttribute('aria-pressed', selected); });
   }
   function faqItems(items = C.faq) { return `<div class="faq-list">${items.map(([q, a]) => `<details class="faq-item"><summary>${esc(q)}${icon('plus')}</summary><p>${esc(a)}</p></details>`).join('')}</div>`; }
   function pricingPage() {
     const p = C.copy;
-    return `${pageHero(p.pricingEyebrow, p.pricingTitle, p.pricingAccent, p.pricingLead)}<section class="page-content container"><div id="plans">${plans()}</div><table class="comparison"><caption class="eyebrow" style="margin-bottom:15px">BASIC VS PREMIUM</caption><thead><tr><th scope="col">Your experience</th><th scope="col">Basic</th><th scope="col">Premium</th></tr></thead><tbody>${[[p.basic.features[0], true, true], [p.basic.features[1], true, true], [p.basic.features[3], true, true], [p.premium.features[1], false, true], [p.premium.features[2], false, true], ['Lifetime access with one-time purchase', false, true]].map(([label, basic, premium]) => `<tr><th scope="row">${esc(label)}</th><td>${basic ? `${icon('check')}<span class="small">Included</span>` : '—'}</td><td>${premium ? `${icon('check')}<span class="small">Included</span>` : '—'}</td></tr>`).join('')}</tbody></table><div class="pricing-faq">${heading(p.faqEyebrow, 'A plan.', 'A little clarity.', '', true)}${faqItems([C.faq[1], C.faq[4], C.faq[5], C.faq[9]])}</div></section>`;
+    return pageHero(p.pricingEyebrow, p.pricingTitle, p.pricingAccent, p.pricingLead) + '<section class="page-content container"><div id="plans">' + plans() + '</div><div class="pricing-faq">' + heading(p.faqEyebrow, 'A license.', 'A little clarity.', '', true) + faqItems([C.faq[1], C.faq[4], C.faq[5]]) + '</div></section>';
   }
   function accountPage(downloads = false) {
     const p = C.copy;
@@ -255,8 +256,9 @@
       const next = downloads ? 'downloads' : 'dashboard';
       return `<div class="account-panel center">${icon('discord')}<h2>Everything starts with Discord.</h2><p>Connect your account to access your Helix dashboard. We only ask for your basic Discord profile.</p>${notice ? `<p class="notice">${esc(notice)}</p>` : ''}${discordSession.configured ? `<div class="actions"><a class="button primary" href="${C.discord.apiBase}/login?next=${next}" target="_top">${icon('discord')} Connect Discord ${icon('arrow')}</a></div>` : `<p class="notice">Discord sign-in will be available soon. Your community is already connected.</p><button class="button primary" data-action="join-discord">${icon('discord')} Join the community ${icon('arrow')}</button>`}</div>`;
     }
-    return `<div class="account-panel"><div class="account-identity">${mark()}<div>${eyebrow('CONNECTED WITH DISCORD')}<h2>${esc(user.displayName || user.username)}</h2><p class="account-name">@${esc(user.username)}</p></div><button class="button" data-action="logout">Sign out</button></div><div class="account-stats"><div class="account-stat"><small>Discord ID</small><strong class="discord-id">${esc(user.id)}</strong></div><div class="account-stat"><small>Connection</small><strong>Verified</strong></div><div class="account-stat"><small>Premium</small><strong>Not linked yet</strong></div></div>${downloads ? `<div id="release-list">${releaseList()}</div><h3 style="margin-top:30px">From download to in-game.</h3><ol class="install-steps">${C.copy.downloadSteps.map(step => `<li>${esc(step)}</li>`).join('')}</ol>` : `<div class="actions">${btn('Explore downloads', '#/downloads', true, 'download')}${btn('Explore modules', '#/modules')}</div>`}<p class="account-empty-note">Available releases and Premium access will appear here when they are linked to your account.</p></div>`;
+    return '<div class="account-panel"><div class="account-identity">' + mark() + '<div>' + eyebrow('CONNECTED WITH DISCORD') + '<h2>' + esc(user.displayName || user.username) + '</h2><p class="account-name">@' + esc(user.username) + '</p></div><button class="button" data-action="logout">Sign out</button></div><div class="account-stats"><div class="account-stat"><small>Discord ID</small><strong class="discord-id">' + esc(user.id) + '</strong></div><div class="account-stat"><small>Connection</small><strong>Verified</strong></div><div class="account-stat"><small>Licenses</small><a href="' + esc(C.links.checkout) + '" target="_top">Get a license on SellAuth →</a></div></div><div id="injector-panel"><p role="status">Checking injector availability…</p></div><h3 style="margin-top:30px">From license to in-game.</h3><ol class="install-steps">' + C.copy.downloadSteps.map(step => '<li>' + esc(step) + '</li>').join('') + '</ol></div>';
   }
+
   function releaseList() {
     if (!C.releases.length) return '<div class="release-info"><div><h3>No release published yet.</h3><p>Verified files and a changelog will appear here when a release is available.</p></div><button class="button small-btn" disabled>Download unavailable</button></div>';
     return C.releases.map(r => `<article class="release-info"><div><h3>${esc(r.version)}</h3><p>Minecraft ${esc(r.minecraft)} · ${esc(r.date)}</p><details><summary class="small">Changelog</summary><p>${esc(r.changelog)}</p></details></div><button class="button small-btn" disabled>Sign-in required</button></article>`).join('');
@@ -271,7 +273,7 @@
   function legalPage(key) { const p = C.legal[key]; return `${pageHero('THE DETAILS', p.title, '', 'Draft information for review before public sales.')}<section class="page-content container legal-page"><p class="notice warning">${esc(C.legal.warning)}</p>${p.sections.map(([title, content]) => `<article class="legal-section"><h2>${esc(title)}</h2><p>${esc(content)}</p></article>`).join('')}${key === 'privacy' ? '<button class="button" data-action="reset-preferences">Reset local preferences</button>' : ''}</section>`; }
   function detail(id) {
     const m = modules.find(x => x.id === id); if (!m) return;
-    openDialog(m.name, `${icon(m.icon)}<div class="dialog-tags"><span class="badge">${esc(m.category.toUpperCase())}</span><span class="badge ${m.premium ? '' : 'free'}">${m.premium ? 'PREMIUM' : 'FREE'}</span></div><p>${esc(m.description)}</p><div class="detail-info"><div><span>Category</span><span>${esc(m.category)}</span></div><div><span>Edition</span><span>${m.premium ? 'Premium' : 'Basic & Premium'}</span></div><div><span>Availability</span><span>Concept · awaiting confirmation</span></div></div><p class="notice">This catalog is a preview. Published releases will confirm compatibility, features and edition access.</p>${btn(m.premium ? 'Explore Premium' : 'Explore downloads', m.premium ? '#/pricing' : '#/downloads', true)}`, 'drawer');
+    openDialog(m.name, icon(m.icon) + '<div class="dialog-tags"><span class="badge">' + esc(m.category.toUpperCase()) + '</span></div><p>' + esc(m.description) + '</p><div class="detail-info"><div><span>Category</span><span>' + esc(m.category) + '</span></div></div>' + btn('Open dashboard', '#/dashboard', true), 'drawer');
   }
   function searchPalette() {
     openDialog('Find your next module.', `<label class="search-box">${icon('search')}<input id="global-search" type="search" placeholder="${esc(ui('search'))}" aria-label="Global module search" autocomplete="off"><span class="keycap">ESC</span></label><div class="search-results" id="global-results" aria-live="polite"></div><p class="small muted" style="margin:15px 0 0">Use Tab to explore results. Enter to open a module.</p>`);
@@ -318,8 +320,8 @@
   }
   function syncScene() {
     const conceptRoot = $('.concept-body'); if (!conceptRoot) return;
-    $('[data-hud]', conceptRoot).hidden = toggles['module-0'] === false;
-    $('[data-keys]', conceptRoot).hidden = toggles['module-2'] === false;
+    $('[data-hud]', conceptRoot).hidden = toggles['hud'] === false;
+    $('[data-keys]', conceptRoot).hidden = toggles['hotkeys'] === false;
     const enabled = modules.slice(0, 4).filter(m => toggles[m.id] !== false).length;
     $('.scene-status', conceptRoot).innerHTML = `<span class="dot"></span>${enabled} modules. Your way.`;
   }
@@ -340,7 +342,7 @@
     const pageAtRequest = currentPage;
     fetchDiscordSession().then(session => {
       discordSession = session;
-      if ($('#account-content') && pageAtRequest === currentPage) $('#account-content').innerHTML = accountPanel(currentPage === 'downloads');
+      if ($('#account-content') && pageAtRequest === currentPage) { $('#account-content').innerHTML = accountPanel(currentPage === 'downloads'); window.HelixInjector?.mount(session.account); }
     });
     const [stats, reviews] = await Promise.all([fetchDiscordStats(), fetchReviews()]);
     if (pageAtRequest !== currentPage) return;

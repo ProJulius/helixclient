@@ -51,3 +51,9 @@ test('missing production origin fails closed instead of returning to the Sites d
 test('unknown routes remain unavailable', async () => {
   assert.equal((await handler.fetch(new Request(origin + '/api?__discord_action=config'))).status, 404);
 });
+test('injector rewrite rejects anonymous metadata, download and identity spoofing', () => configured(async () => {
+  for (const action of ['status', 'download']) {
+    const response = await handler.fetch(new Request(origin + '/api?__injector_action=' + action, { headers: { 'x-discord-id': '1425462441495625768' } }));
+    assert.equal(response.status, 401);
+  }
+}));

@@ -48,7 +48,7 @@ Redeploy the Vercel project after saving environment variables, then open `https
 
 Vercel assigns a `vercel.app` address. A custom domain requires a domain whose DNS you control; the current `helixclient.casper-schotman.chatgpt.site` address belongs to Sites hosting. If you later change the production domain, update SITE_ORIGIN, the Discord callback and redeploy. The build updates social metadata using SITE_ORIGIN.
 
-This copy was tested locally with Node, including the adapter's routing, secure-cookie preservation, callback origin, logout and the existing mocked OAuth security tests. It has not been deployed or authenticated on a real Vercel account. Actual Discord consent must be checked after deployment. Premium licenses, payments and release files remain unconnected, exactly as in the current site.
+This copy was tested locally with Node, including the adapter's routing, secure-cookie preservation, callback origin, logout and the existing mocked OAuth security tests. It has not been deployed or authenticated on a real Vercel account. Actual Discord consent must be checked after deployment. License purchases and all payments now take place on https://helix-client.mysellauth.com/. License redemption/validation is not implemented in this website; signing in does not grant a paid entitlement. The injector can be uploaded by the administrator and downloaded by signed-in users once Blob storage is connected.
 
 ## Code and checks
 
@@ -59,3 +59,14 @@ This copy was tested locally with Node, including the adapter's routing, secure-
 - `npm run check` and `npm test`: syntax and security/adapter checks; no dependencies are required.
 
 Official references: [Vercel Node.js functions](https://vercel.com/docs/functions/runtimes/node-js), [build configuration](https://vercel.com/docs/builds/configure-a-build), [environment variables](https://vercel.com/docs/environment-variables).
+
+## Administrator injector uploads
+
+1. In Vercel, create a **private Blob store** and connect it to this project for Production. Configure its `BLOB_READ_WRITE_TOKEN` as a server secret if the store connection does not add it automatically. Redeploy.
+2. Sign in through Discord with the existing administrator ID `1425462441495625768`. `ADMIN_DISCORD_ID` can override that allowlist entry. Other accounts cannot upload.
+3. Open the Dashboard or Downloads page, choose the injector file and optional version, then select Upload injector. Maximum: 64 MB. The uploader sends large files directly to private Blob storage using a short-lived admin-authorized token.
+4. A verified completion callback publishes release metadata. Signed-in users can then download through the authenticated endpoint. File bytes are streamed with attachment headers; they are not executed or stored in Git.
+
+Connect a private store, not a public store. The shared production store is separate from preview environments and from the original Sites R2 bucket. The current injector is replaced only after a successful upload. Blob authentication callbacks must remain accessible to Vercel; deployment protection can block callbacks on preview deployments.
+
+The site uses the supplied HelixLogo.png and the 134-module built-in UI7 registry; see MODULE_CATALOG.md. Reviews link to https://helix-client.mysellauth.com/feedback. No client JAR, source archive, license credentials or injector binary is committed.
