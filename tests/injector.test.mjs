@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createInjectorService, INJECTOR_ADMIN_ID, INJECTOR_MAX_BYTES } from '../lib/injector-service.mjs';
+import { createInjectorService, r2InjectorStorage, INJECTOR_ADMIN_ID, INJECTOR_MAX_BYTES } from '../lib/injector-service.mjs';
 import { createDiscordService } from '../lib/discord-service.mjs';
 
 const origin = 'https://helix.example';
@@ -78,4 +78,32 @@ test('missing storage and missing files have explicit unavailable states', async
   assert.equal((await (await service.handle(request(), env)).json()).configured, false);
   assert.equal((await service.handle(upload(), env)).status, 503);
   assert.equal((await fixture().service.handle(request('/download'), env)).status, 404);
+});
+
+test('misstated stream lengths cannot replace an existing release', async () => {
+  const f = fixture();
+  await f.service.handle(upload(), env);
+  for (const size of ['1', '999']) assert.equal((await f.service.handle(upload({ 'Content-Length': size }, 'updated'), env)).status, 413);
+  assert.equal(await (await f.service.handle(request('/download'), env)).text(), 'example-release');
+});
+
+test('R2 receives the final Cloudflare fixed-length stream after byte validation', async () => {
+  const original = globalThis.FixedLengthStream;
+  let length;
+  globalThis.FixedLengthStream = class extends TransformStream {
+    constructor(size) { super(); length = size; this.readable.knownLength = size; }
+  };
+  try {
+    const storage = r2InjectorStorage({ BUCKET: { async put(key, body) {
+      assert.equal(body.knownLength, 2);
+      assert.equal(await new Response(body).text(), 'ab');
+      return { size: 2 };
+    } } });
+    const result = await storage.write(new Response('ab').body, { filename: 'Helix.exe', version: '', uploadedAt: new Date().toISOString(), size: 2 });
+    assert.equal(length, 2);
+    assert.equal(result.size, 2);
+  } finally {
+    if (original === undefined) delete globalThis.FixedLengthStream;
+    else globalThis.FixedLengthStream = original;
+  }
 });

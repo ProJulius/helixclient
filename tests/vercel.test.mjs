@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import handler from '../api/index.mjs';
+import { readFileSync } from 'node:fs';
+import { securityHeaders } from '../lib/security.mjs';
 
 const origin = 'https://helix-test.vercel.app';
 const keys = ['SITE_ORIGIN', 'DISCORD_CLIENT_ID', 'DISCORD_CLIENT_SECRET', 'SESSION_SECRET'];
@@ -56,4 +58,21 @@ test('injector rewrite rejects anonymous metadata, download and identity spoofin
     const response = await handler.fetch(new Request(origin + '/api?__injector_action=' + action, { headers: { 'x-discord-id': '1425462441495625768' } }));
     assert.equal(response.status, 401);
   }
+}));
+
+test('Vercel static responses and function responses share the same security policy', () => configured(async () => {
+  const config = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+  const headers = Object.fromEntries(config.headers.find(rule => rule.source === '/(.*)').headers.map(header => [header.key, header.value]));
+  assert.deepEqual(headers, securityHeaders);
+  for (const url of ['/api?__discord_action=session', '/api?__discord_action=unknown']) {
+    const result = await handler.fetch(new Request(origin + url));
+    assert.equal(result.headers.get('content-security-policy'), securityHeaders['Content-Security-Policy']);
+    assert.equal(result.headers.get('access-control-allow-origin'), null);
+  }
+}));
+
+test('injector rewrite fails closed on invalid production origin', () => configured(async () => {
+  process.env.SITE_ORIGIN = origin + '/path';
+  const result = await handler.fetch(new Request(origin + '/api?__injector_action=status'));
+  assert.equal(result.status, 503);
 }));

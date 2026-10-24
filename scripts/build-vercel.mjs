@@ -1,8 +1,10 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { build } from 'esbuild';
 import { fileURLToPath } from 'node:url';
+import { checkPublicAssets } from './check-public.mjs';
 
 const filename = new URL('../public/index.html', import.meta.url);
+checkPublicAssets(fileURLToPath(new URL('../public/', import.meta.url)));
 let html = readFileSync(filename, 'utf8').replace(/\s*<meta property="og:(?:url|image)"[^>]*>/g, '');
 if (process.env.SITE_ORIGIN) {
   const url = new URL(process.env.SITE_ORIGIN);
@@ -11,4 +13,5 @@ if (process.env.SITE_ORIGIN) {
 }
 writeFileSync(filename, html);
 await build({ entryPoints: [fileURLToPath(new URL('./injector-client.mjs', import.meta.url))], outfile: fileURLToPath(new URL('../public/injector-upload.js', import.meta.url)), bundle: true, minify: true, platform: 'browser', format: 'iife', target: ['es2022'] });
+checkPublicAssets(fileURLToPath(new URL('../public/', import.meta.url)));
 console.log('Vercel public assets prepared. Discord runs through api/index.mjs.');
