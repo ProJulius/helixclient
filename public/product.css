@@ -1,8 +1,8 @@
 .mark{object-fit:contain;flex-shrink:0}
 .brand .mark{width:34px!important;height:34px!important;transform:scale(1.25)}
 .account-identity>.mark{transform:scale(1.2)}
-.board-columns{grid-template-columns:repeat(9,minmax(150px,1fr))!important;overflow:auto!important;align-items:start}
-.board-column{animation:none!important;transform:none!important;max-height:100%;overflow-y:auto}
+.board-columns{grid-template-columns:repeat(9,minmax(150px,1fr))!important;overflow:auto!important;align-items:stretch}
+.board-column{animation:none!important;transform:none!important;max-height:100%;overflow-y:auto;margin-top:0!important}
 .category-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 .buy-step-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
 .buy-step-grid>div{padding:14px 12px;font-size:12px}
@@ -24,3 +24,5 @@
 .account-stat a{font-size:13px;color:var(--accent);display:block;margin-top:10px}
 @media(max-width:900px){.buy-step-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.category-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:600px){.buy-step-grid{grid-template-columns:1fr}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.injector-card{padding:18px}.injector-release>.button{width:100%}}
+
+.language-menu .locale-options{margin-top:0;padding-top:0;border-top:0}

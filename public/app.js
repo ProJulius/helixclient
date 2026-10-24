@@ -88,7 +88,7 @@
   };
   const icon = name => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${iconPaths[name] || iconPaths.grid}</svg>`;
   const mark = () => '<img class="mark" src="/helix-logo.png" alt="" width="40" height="40" decoding="async">';
-  const brand = () => `<a class="brand" href="#home" aria-label="${esc(C.brand.title)} home">${mark()}<span>helix<span>client</span></span></a>`;
+  const brand = () => `<a class="brand" href="#home" aria-label="${esc(C.brand.title)} home">${mark()}<span>Helix<span>client</span></span></a>`;
   const btn = (label, href, primary = false, glyph = 'arrow', extra = '') => `<a class="button${primary ? ' primary' : ''}" href="${esc(href)}" ${extra}>${esc(label)}${icon(glyph)}</a>`;
   const eyebrow = text => `<p class="eyebrow">${esc(text)}</p>`;
   const heading = (overline, title, accent, lead = '', center = false) => `<div class="section-heading${center ? ' center' : ''}">${eyebrow(overline)}<h2>${esc(title)} <span class="serif accent">${esc(accent)}</span></h2>${lead ? `<p>${esc(lead)}</p>` : ''}</div>`;
@@ -154,9 +154,8 @@
   function closeDialog() { $('#overlay').close(); }
 
   function renderHeader() {
-    const p = C.copy.referenceLayout;
     const items = [{ id: 'features', label: language === 'de' ? 'Funktionen' : 'Features', href: '#features' }, { id: 'showcases', label: 'Showcases', href: '#/showcases' }, { id: 'reviews', label: language === 'de' ? 'Bewertungen' : 'Reviews', href: C.links.reviews }, { id: 'pricing', label: nav('pricing'), href: '#pricing' }, { id: 'discord', label: 'Discord', href: '#community', action: 'join-discord' }];
-    $('#header').innerHTML = '<div class="navbar reference-navbar"><div class="nav-brand">' + brand() + '<div class="language theme-picker"><button class="theme-orb language-toggle" data-action="language-menu" aria-label="Site colour and language" aria-controls="language-menu" aria-expanded="false"></button><div class="language-menu theme-menu" id="language-menu" hidden><span class="eyebrow">' + esc(p.themeLabel) + '</span><div class="theme-swatches"><button data-theme="#f4add4" style="--swatch:#f4add4" aria-label="Pink"></button><button data-theme="#c4aafa" style="--swatch:#c4aafa" aria-label="Lavender"></button><button data-theme="#a9d9fc" style="--swatch:#a9d9fc" aria-label="Ice blue"></button><label class="custom-color">Custom<input id="custom-theme" type="color" value="' + esc(C.brand.colors.accent) + '" aria-label="Custom accent colour"></label></div><button data-theme="reset">' + esc(p.themeReset) + '</button><div class="locale-options"><button data-language="en">EN · English</button><button data-language="de">DE · Deutsch</button></div><button class="theme-mobile-navigation" data-action="mobile-menu">Explore Helix →</button></div></div></div><nav class="navlinks" aria-label="Main navigation">' + items.map(i => '<a href="' + i.href + '" data-nav="' + i.id + '"' + (i.action ? ' data-action="' + i.action + '"' : '') + '>' + esc(i.label) + '</a>').join('') + '</nav><div class="nav-actions"><a class="button ghost small-btn" href="#/dashboard">' + icon('grid') + esc(nav('dashboard')) + '</a><a class="button primary small-btn" href="#pricing">' + esc(nav('get')) + icon('arrow') + '</a><button class="hamburger" data-action="mobile-menu" aria-label="Open navigation" aria-haspopup="dialog">' + icon('menu') + '</button></div></div>';
+    $('#header').innerHTML = '<div class="navbar reference-navbar"><div class="nav-brand">' + brand() + '<div class="language"><button class="language-toggle" data-action="language-menu" aria-label="Language" aria-controls="language-menu" aria-expanded="false">' + esc(language.toUpperCase()) + icon('down') + '</button><div class="language-menu theme-menu" id="language-menu" hidden><div class="locale-options"><button data-language="en">EN · English</button><button data-language="de">DE · Deutsch</button></div><button class="theme-mobile-navigation" data-action="mobile-menu">Explore Helix →</button></div></div></div><nav class="navlinks" aria-label="Main navigation">' + items.map(i => '<a href="' + i.href + '" data-nav="' + i.id + '"' + (i.action ? ' data-action="' + i.action + '"' : '') + '>' + esc(i.label) + '</a>').join('') + '</nav><div class="nav-actions"><a class="button ghost small-btn" href="#/dashboard">' + icon('grid') + esc(nav('dashboard')) + '</a><a class="button primary small-btn" href="#pricing">' + esc(nav('get')) + icon('arrow') + '</a><button class="hamburger" data-action="mobile-menu" aria-label="Open navigation" aria-haspopup="dialog">' + icon('menu') + '</button></div></div>';
     $('.navbar').lang = language;
   }
   function renderFooter() {
@@ -180,7 +179,8 @@
   }
   function menuShowcase() {
     const p = C.copy.referenceLayout;
-    return '<div class="menu-window reference-menu"><div class="module-board" aria-label="Helix module menu concept"><div class="board-columns">' + categories.map(c => '<div class="board-column" data-board-category="' + c.id + '"><div class="board-column-title">' + icon(c.icon) + '<span>' + esc(c.id.toUpperCase()) + '</span><span class="board-collapse">−</span></div>' + modules.filter(m => m.category === c.id).map(m => '<button class="board-module" role="switch" aria-checked="' + (toggles[m.id] !== false) + '" data-toggle="' + m.id + '"><span>' + esc(m.name.toUpperCase()) + '</span><span class="board-switch" aria-hidden="true"></span></button>').join('') + '</div>').join('') + '</div><span class="board-watermark">HELIX CLIENT</span><span class="board-caption">INTERFACE CONCEPT</span><button class="board-search icon-button" data-action="global-search" aria-label="Search modules">' + icon('search') + '</button></div></div><div class="reference-categories" role="group" aria-label="Preview categories">' + categories.map(c => '<button class="category-card" data-category="' + c.id + '" aria-pressed="false">' + icon(c.icon) + '<span>' + esc(c.id) + '</span></button>').join('') + '<a class="category-card" href="#/modules">' + icon('grid') + '<span>All ' + C.product.moduleCount + C.product.moduleSuffix + ' modules</span></a></div><div class="reference-special"><span>' + esc(p.specialLabel) + '</span>' + p.special.map(s => '<span>' + esc(s) + '</span>').join('<span aria-hidden="true">/</span>') + '</div>';
+    const hiddenPreviewModules = new Set(['jump-circles', 'character-3d', 'weapon-inspect', 'floating-relics', 'pharaoh-headdress', 'particles']);
+    return '<div class="menu-window reference-menu"><div class="module-board" aria-label="Helix module menu concept"><div class="board-columns">' + categories.map(c => '<div class="board-column" data-board-category="' + c.id + '"><div class="board-column-title">' + icon(c.icon) + '<span>' + esc(c.id.toUpperCase()) + '</span><span class="board-collapse">−</span></div>' + modules.filter(m => m.category === c.id && !hiddenPreviewModules.has(m.id)).map(m => '<button class="board-module" role="switch" aria-checked="' + (toggles[m.id] !== false) + '" data-toggle="' + m.id + '"><span>' + esc(m.name.toUpperCase()) + '</span><span class="board-switch" aria-hidden="true"></span></button>').join('') + '</div>').join('') + '</div><span class="board-watermark">HELIX CLIENT</span><span class="board-caption">INTERFACE CONCEPT</span><button class="board-search icon-button" data-action="global-search" aria-label="Search modules">' + icon('search') + '</button></div></div><div class="reference-categories" role="group" aria-label="Preview categories">' + categories.map(c => '<button class="category-card" data-category="' + c.id + '" aria-pressed="false">' + icon(c.icon) + '<span>' + esc(c.id) + '</span></button>').join('') + '<a class="category-card" href="#/modules">' + icon('grid') + '<span>All ' + C.product.moduleCount + C.product.moduleSuffix + ' modules</span></a></div><div class="reference-special"><span>' + esc(p.specialLabel) + '</span>' + p.special.map(s => '<span>' + esc(s) + '</span>').join('<span aria-hidden="true">/</span>') + '</div>';
   }
   function chooseCategory(id) {
     if (!categories.some(c => c.id === id)) return;
@@ -358,7 +358,6 @@
   document.addEventListener('click', async event => {
     const el = event.target.closest('button, a'); if (!el) return;
     if (el.closest('#overlay') && el.tagName === 'A' && el.getAttribute('href')?.startsWith('#')) closeDialog();
-    if (el.dataset.theme) { applyTheme(el.dataset.theme); return; }
     if (el.dataset.detail) return detail(el.dataset.detail);
     if (el.dataset.toggle) { const id = el.dataset.toggle; toggles[id] = toggles[id] === false; storage.write('toggles', toggles); el.setAttribute('aria-checked', toggles[id]); syncScene(); return; }
     if (el.dataset.category) return chooseCategory(el.dataset.category);
@@ -395,7 +394,6 @@
   document.addEventListener('input', event => {
     if (event.target.id === 'custom-days-range') { days = Number(event.target.value); updateDays(); }
     if (event.target.id === 'custom-days') { const value = Number(event.target.value); if (event.target.value !== '' && Number.isInteger(value) && value >= C.pricing.minimumDays && value <= C.pricing.maximumDays) { days = value; updateDays(); } }
-    if (event.target.id === 'custom-theme') applyTheme(event.target.value);
     if (event.target.id === 'concept-search') $('#concept-modules').innerHTML = conceptRows(event.target.value);
     if (event.target.id === 'catalog-search') { catalogQuery = event.target.value; updateCatalog(); }
     if (event.target.id === 'global-search') updateGlobalSearch(event.target.value);
@@ -409,11 +407,8 @@
   $('#overlay').addEventListener('click', event => { if (event.target !== $('#overlay')) return; const rect = event.target.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeDialog(); });
   $('#overlay').addEventListener('close', () => { document.body.classList.remove('modal-open'); if (dialogReturnFocus?.isConnected) dialogReturnFocus.focus({ preventScroll: true }); });
   window.addEventListener('hashchange', () => render());
-  function applyTheme(value) { const color = value === 'reset' ? C.brand.colors.accent : value; if (!/^#[0-9a-f]{6}$/i.test(color)) return; document.documentElement.style.setProperty('--accent', color); storage.write('accent', color); }
   Object.entries(C.brand.colors).forEach(([k, v]) => document.documentElement.style.setProperty(`--${k}`, v));
   Object.entries(C.brand.fonts).forEach(([k, v]) => document.documentElement.style.setProperty(`--font-${k}`, v));
   document.documentElement.style.setProperty('--radius', C.brand.radius);
-  const savedAccent = storage.read('accent', null);
-  if (savedAccent) applyTheme(savedAccent);
   render();
 })();
