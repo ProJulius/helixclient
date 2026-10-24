@@ -1,6 +1,8 @@
 (() => {
   'use strict';
   const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+  const uploadLimit = data => Number.isSafeInteger(data.maxBytes) && data.maxBytes > 0 ? data.maxBytes : 96 * 1048576;
+  const sizeLabel = bytes => Number((bytes / 1048576).toFixed(1)) + ' MiB';
   let generation = 0;
   async function metadata() {
     const response = await fetch('/api/injector', { credentials: 'same-origin', cache: 'no-store', signal: AbortSignal.timeout(10000) });
@@ -10,7 +12,7 @@
   function render(data) {
     const release = data.release;
     const download = release ? '<div><p class="eyebrow">HELIX INJECTOR</p><h3>' + escape(release.version || 'Latest release') + '</h3><p>' + escape(release.filename) + ' · ' + (release.size / 1048576).toFixed(1) + ' MB</p></div><a class="button primary" href="/api/injector/download">Download injector →</a>' : '<div><p class="eyebrow">HELIX INJECTOR</p><h3>No injector uploaded yet.</h3><p>The download will appear here as soon as it is published.</p></div>';
-    const admin = data.canUpload ? '<div class="injector-admin"><p class="eyebrow">ADMINISTRATOR</p><h3>Publish an injector.</h3><p>Choose your release file. Uploading replaces the injector available to signed-in users.</p>' + (data.configured ? '<form id="injector-upload-form"><label>Injector file<input type="file" id="injector-file" accept=".exe,.zip,.msi,.dmg,.appimage,.jar,.dll" required></label><label>Version label (optional)<input type="text" id="injector-version" maxlength="60" placeholder="e.g. 1.0.0"></label><p class="small muted">Maximum file size: 64 MB.</p><button class="button primary" type="submit">Upload injector</button><progress id="injector-progress" max="100" value="0" hidden></progress><p id="injector-upload-status" role="status" aria-live="polite"></p></form>' : '<p class="notice">File storage needs to be connected before you can upload.</p>') + '</div>' : '';
+    const admin = data.canUpload ? '<div class="injector-admin"><p class="eyebrow">ADMINISTRATOR</p><h3>Publish an injector.</h3><p>Choose your release file. Uploading replaces the injector available to signed-in users.</p>' + (data.configured ? '<form id="injector-upload-form"><label>Injector file<input type="file" id="injector-file" accept=".exe,.zip,.msi,.dmg,.appimage,.jar,.dll" required></label><label>Version label (optional)<input type="text" id="injector-version" maxlength="60" placeholder="e.g. 1.0.0"></label><p class="small muted">Maximum file size: ' + sizeLabel(uploadLimit(data)) + '.</p><button class="button primary" type="submit">Upload injector</button><progress id="injector-progress" max="100" value="0" hidden></progress><p id="injector-upload-status" role="status" aria-live="polite"></p></form>' : '<p class="notice">File storage needs to be connected before you can upload.</p>') + '</div>' : '';
     return '<section class="injector-card"><div class="injector-release">' + download + '</div>' + admin + '</section>';
   }
   function serverUpload(file, version, progress) {
@@ -42,7 +44,10 @@
         const version = form.querySelector('#injector-version').value.trim();
         const status = form.querySelector('#injector-upload-status');
         const progress = form.querySelector('#injector-progress');
-        if (!file || !file.size || file.size > 64 * 1048576 || !/^[A-Za-z0-9][A-Za-z0-9._ ()-]*\.(exe|zip|msi|dmg|appimage|jar|dll)$/i.test(file.name) || file.name.includes('..')) { status.textContent = 'Choose a supported file up to 64 MB, with a simple filename.'; return; }
+        if (!file) { status.textContent = 'Choose an injector file first.'; return; }
+        if (!file.size) { status.textContent = 'The selected file is empty. Choose a non-empty injector file.'; return; }
+        if (file.size > uploadLimit(data)) { status.textContent = 'This file is ' + sizeLabel(file.size) + '. Maximum file size is ' + sizeLabel(uploadLimit(data)) + '.'; return; }
+        if (file.name.length > 120 || !/^[A-Za-z0-9][A-Za-z0-9._ ()-]*\.(exe|zip|msi|dmg|appimage|jar|dll)$/i.test(file.name) || file.name.includes('..')) { status.textContent = 'Use a simple filename up to 120 characters ending in .exe, .zip, .msi, .dmg, .appimage, .jar or .dll.'; return; }
         if (form.dataset.uploading) return;
         form.dataset.uploading = 'true';
         form.querySelectorAll('input,button').forEach(input => input.disabled = true);

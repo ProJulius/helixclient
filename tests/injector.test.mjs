@@ -107,3 +107,23 @@ test('R2 receives the final Cloudflare fixed-length stream after byte validation
     else globalThis.FixedLengthStream = original;
   }
 });
+
+test('the 68.2 MiB release fits the limit and streams without buffering the file', async () => {
+  const size = 71527927;
+  const chunk = new Uint8Array(1048576);
+  let remaining = size, received = 0;
+  const body = new ReadableStream({ pull(controller) {
+    if (!remaining) { controller.close(); return; }
+    const count = Math.min(remaining, chunk.byteLength);
+    controller.enqueue(chunk.subarray(0, count)); remaining -= count;
+  } });
+  const storage = { mode: 'server', async write(stream, metadata) {
+    for await (const bytes of stream) received += bytes.byteLength;
+    assert.equal(received, size);
+    return { ...metadata, size: received };
+  } };
+  const service = createInjectorService({ getAccount: async () => ({ id: INJECTOR_ADMIN_ID }), getStorage: () => storage });
+  const response = await service.handle(request('/upload', { method: 'PUT', body, duplex: 'half', headers: { Origin: origin, 'Content-Length': String(size), 'X-Injector-Filename': 'HelixInjector_1.0.6.exe' } }), env);
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).release.size, size);
+});
