@@ -1149,10 +1149,10 @@ window.HELIX_CONFIG = {
         "License access",
         "Connected with Discord"
       ],
-      "pricingLead": "Choose your access. Buy your license securely through our SellAuth store.",
+      "pricingLead": "Start with Helix Basic for free, or unlock Premium through our SellAuth store.",
       "monthlyName": "Helix Premium · 30 days",
       "lifetimeName": "Helix Premium · Lifetime",
-      "basicName": "Already have a license?",
+      "basicName": "Helix Basic",
       "buy": [
         "Open the dashboard.",
         "Log in with Discord.",
@@ -1249,18 +1249,18 @@ window.HELIX_CONFIG = {
     "pricingEyebrow": "A PLAN FOR YOUR PLAYSTYLE",
     "pricingTitle": "Your client.",
     "pricingAccent": "Your access.",
-    "pricingLead": "Choose your access. Buy your license securely through our SellAuth store.",
+    "pricingLead": "Start with Helix Basic for free, or unlock Premium through our SellAuth store.",
     "basic": {
       "name": "HELIX BASIC",
-      "lead": "Get comfortable. Make it yours.",
+      "lead": "Free forever. No license required.",
       "term": "/ forever",
       "features": [
-        "Connect your Discord account",
-        "Enter your license in the dashboard",
+        "Open the dashboard",
+        "Log in with Discord",
         "Download the injector",
         "Inject and play"
       ],
-      "cta": "Open dashboard"
+      "cta": "Download for free"
     },
     "premium": {
       "name": "HELIX PREMIUM",
