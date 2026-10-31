@@ -1,17 +1,37 @@
 # Helix module catalog
 
-Extracted without executing the client from `helix-client-ui7-source.zip`. SHA-256: `1A219871325B5D90986BD7B2B53D38C6945D77785578593D4DD1FADD0374D164`.
+Synced from [`cosmofn/helix-client`](https://github.com/cosmofn/helix-client) `main`, pinned to commit [`65de2b3`](https://github.com/cosmofn/helix-client/commit/65de2b327f183d1a01b8147807b2ec912ad1dba6). Verified against the fetched GitHub branch on 31 October 2026.
 
-The built-in provider constructs 134 modules. Names, stable IDs, descriptions and categories come from constructor metadata, including inherited cosmetic categories. ModuleRegistry uses this provider by default. This is a static catalog check; client behavior was not run or tested. The source does not assign Free/Premium tiers, so the website does not invent module tiers.
+The registered built-in provider constructs **126 modules**. Stable IDs, names, descriptions and categories are extracted from constructor metadata in the Git objects at that exact commit. Category labels come from ModuleCategory. ModuleRegistry registers this provider by default. Client source was read as data and was not executed; this catalog sync does not verify live Minecraft behavior. No Free/Premium module tiers are invented.
+
+## Added since the previous website catalog
+
+| Module | Category | Source |
+| --- | --- | --- |
+| Double Anchor | Combat | [Constructor](https://github.com/cosmofn/helix-client/blob/65de2b327f183d1a01b8147807b2ec912ad1dba6/net/helix/client/module/impl/combat/DoubleAnchorModule.java) |
+| Auto Xbow Cart | Combat | [Constructor](https://github.com/cosmofn/helix-client/blob/65de2b327f183d1a01b8147807b2ec912ad1dba6/net/helix/client/module/impl/combat/AutoXbowCartModule.java) |
+| Durability Guard | Misc | [Constructor](https://github.com/cosmofn/helix-client/blob/65de2b327f183d1a01b8147807b2ec912ad1dba6/net/helix/client/module/impl/misc/DurabilityGuardModule.java) |
+| Auto Builder | Donut | [Constructor](https://github.com/cosmofn/helix-client/blob/65de2b327f183d1a01b8147807b2ec912ad1dba6/net/helix/client/module/impl/misc/AutoBuilderModule.java) |
+| Stash ESP | Base Finding | [Constructor](https://github.com/cosmofn/helix-client/blob/65de2b327f183d1a01b8147807b2ec912ad1dba6/net/helix/client/module/impl/render/StashEspModule.java) |
+| Relog Method | Base Finding | [Constructor](https://github.com/cosmofn/helix-client/blob/65de2b327f183d1a01b8147807b2ec912ad1dba6/net/helix/client/module/impl/render/RelogMethodModule.java) |
+| Desert Sand Farmer | Donut | [Constructor](https://github.com/cosmofn/helix-client/blob/65de2b327f183d1a01b8147807b2ec912ad1dba6/net/helix/client/module/impl/donutmacros/DesertSandFarmerModule.java) |
+| Auto Dig Out Area | Macro | [Constructor](https://github.com/cosmofn/helix-client/blob/65de2b327f183d1a01b8147807b2ec912ad1dba6/net/helix/client/module/impl/donutmacros/AutoDigOutAreaModule.java) |
+| Self Destruct | Helix Client | [Constructor](https://github.com/cosmofn/helix-client/blob/65de2b327f183d1a01b8147807b2ec912ad1dba6/net/helix/client/module/impl/client/SelfDestructModule.java) |
+
+## Category counts
 
 | Category | Modules |
 | --- | --- |
-| Combat | 22 |
+| Combat | 24 |
 | Movement | 18 |
 | Render | 17 |
-| Visuals | 21 |
+| Visuals | 11 |
 | Misc | 16 |
-| Helix Client | 7 |
-| Donut | 13 |
-| Base Finding | 12 |
-| Macro | 8 |
+| Helix Client | 8 |
+| Donut | 15 |
+| Base Finding | 8 |
+| Macro | 9 |
+
+The full sync removes 17 entries absent from the current provider: Player Bypass, Player Bypass 2, Home Meta, 3D Hand, Hand Pose, Hand Aura, Skin Change, Prime Chunk Finder, Block Entity Debug, Light Debug, Custom Crosshair, Hit Particles, Particles, Jump Circles, Pharaoh Headdress, 3D Character, Floating Relics. Existing module metadata also follows GitHub, including Auto Base Hunter (Soon), Auto Relog and Netherite Finder. Showcase examples reference registered modules only.
+
+The earlier preview-menu exclusions remain in place. CS Knife is registered and searchable in the full catalog, but hidden from the preview menu as requested. The other five excluded preview modules are no longer registered upstream. The preview therefore contains 125 entries. Layout, equal column heights, branding, pricing, SellAuth links, Discord authentication and upload behavior are unchanged.

@@ -1,4 +1,4 @@
-// Product catalog extracted from the supplied Helix UI7 built-in module provider.
+// Module metadata synced from cosmofn/helix-client at 65de2b327f183d1a01b8147807b2ec912ad1dba6.
 window.HELIX_CONFIG = {
   "brand": {
     "name": "helixclient",
@@ -24,7 +24,7 @@ window.HELIX_CONFIG = {
     "logo": "/helix-logo.png"
   },
   "product": {
-    "moduleCount": 134,
+    "moduleCount": 126,
     "moduleSuffix": "",
     "minecraft": "1.21.11",
     "version": "Release pending",
@@ -140,10 +140,22 @@ window.HELIX_CONFIG = {
       "description": "Press the bound key to instantly place, charge and detonate a respawn anchor."
     },
     {
+      "id": "double-anchor",
+      "name": "Double Anchor",
+      "category": "Combat",
+      "description": "Press the key to place, charge and air-place a second anchor for two explosions."
+    },
+    {
       "id": "safe-anchor",
       "name": "Safe Anchor",
       "category": "Combat",
       "description": "Silently places a blast-proof block between you and a respawn anchor so you take no damage."
+    },
+    {
+      "id": "auto-xbow-cart",
+      "name": "Auto Xbow Cart",
+      "category": "Combat",
+      "description": "Press the key to lay a rail and TNT minecart, then look at the block in front to light the cart and at the cart to shoot it."
     },
     {
       "id": "anchor-aura",
@@ -266,6 +278,12 @@ window.HELIX_CONFIG = {
       "description": "Auto tool that only switches hotbar slots like a player."
     },
     {
+      "id": "durability-guard",
+      "name": "Durability Guard",
+      "category": "Misc",
+      "description": "Blocks tool use at or below your remaining-durability threshold."
+    },
+    {
       "id": "auto-clicker",
       "name": "Auto Clicker",
       "category": "Misc",
@@ -297,7 +315,7 @@ window.HELIX_CONFIG = {
     },
     {
       "id": "auto-base-hunter",
-      "name": "Auto Base Hunter",
+      "name": "Auto Base Hunter (Soon)",
       "category": "Base Finding",
       "description": "RTPs and mines to Y=-58, scoring underground regions for real bases."
     },
@@ -317,7 +335,7 @@ window.HELIX_CONFIG = {
       "id": "auto-relog",
       "name": "Auto Relog",
       "category": "Donut",
-      "description": "Relogs once when you go down to deepslate level."
+      "description": "Relogs when a real base is found below Y 10. Turns on Sus Chunk Finder tuned for base hunting."
     },
     {
       "id": "anti-trap",
@@ -344,34 +362,22 @@ window.HELIX_CONFIG = {
       "description": "Lists online DonutSMP staff."
     },
     {
-      "id": "player-bypass",
-      "name": "Player Bypass",
-      "category": "Base Finding",
-      "description": "Flags chunks with signs of underground player bases from light data."
-    },
-    {
-      "id": "player-bypass-2",
-      "name": "Player Bypass 2",
-      "category": "Base Finding",
-      "description": "Finds hidden players from chunks that keep ticking outside your simulation distance."
-    },
-    {
       "id": "netherite-finder",
       "name": "Netherite Finder",
       "category": "Donut",
-      "description": "Boxes Nether chunk sections hiding ancient debris."
+      "description": "Outlines Nether chunks that may hide ancient debris."
+    },
+    {
+      "id": "auto-builder",
+      "name": "Auto Builder",
+      "category": "Donut",
+      "description": "Rebuilds a Sponge .schem block by block with reach, rotation and material checks."
     },
     {
       "id": "render-distance-toggle",
       "name": "Render Distance Toggle",
       "category": "Base Finding",
       "description": "Reloads chunks when you go below a Y level."
-    },
-    {
-      "id": "home-meta",
-      "name": "Home Meta",
-      "category": "Base Finding",
-      "description": "Re-sets a home, RTPs away, then teleports back home."
     },
     {
       "id": "trident-util",
@@ -584,30 +590,6 @@ window.HELIX_CONFIG = {
       "description": "Knife skins for your sword and CS-style inspects with a key of your choice (F by default); hold the key to keep the knife spinning."
     },
     {
-      "id": "3d-hand",
-      "name": "3D Hand",
-      "category": "Visuals",
-      "description": "Shows your own arm holding the item in first person: swords, tools, items and blocks."
-    },
-    {
-      "id": "hand-pose",
-      "name": "Hand Pose",
-      "category": "Visuals",
-      "description": "Moves, rotates and resizes your first-person hands."
-    },
-    {
-      "id": "hand-aura",
-      "name": "Hand Aura",
-      "category": "Visuals",
-      "description": "Adds a glowing outline to your hand and held item."
-    },
-    {
-      "id": "skin-change",
-      "name": "Skin Change",
-      "category": "Misc",
-      "description": "Wear any player's skin client-side."
-    },
-    {
       "id": "spawner-notifier",
       "name": "Spawner Notifier",
       "category": "Donut",
@@ -620,28 +602,22 @@ window.HELIX_CONFIG = {
       "description": "Finds chunks with signs of player activity from fully grown amethyst."
     },
     {
+      "id": "stash-esp",
+      "name": "Stash ESP",
+      "category": "Base Finding",
+      "description": "Draws boxes and tracers to clusters of storage, redstone and valuable blocks."
+    },
+    {
+      "id": "relog-method",
+      "name": "Relog Method",
+      "category": "Base Finding",
+      "description": "Disconnects only when a real base is found below Y 10. Turns on Sus Chunk Finder tuned for base hunting."
+    },
+    {
       "id": "chunk-scanner",
       "name": "Chunk Scanner",
       "category": "Base Finding",
       "description": "Marks suspicious chunks with signs of player activity."
-    },
-    {
-      "id": "prime-chunk-finder",
-      "name": "Prime Chunk Finder",
-      "category": "Base Finding",
-      "description": "Flags chunks with light and redstone changes below Y 0."
-    },
-    {
-      "id": "block-entity-debug",
-      "name": "Block Entity Debug",
-      "category": "Base Finding",
-      "description": "Renders every leaked block entity as ESP (always-on Netty capture)."
-    },
-    {
-      "id": "light-debug",
-      "name": "Light Debug",
-      "category": "Base Finding",
-      "description": "Highlights artificial light underground."
     },
     {
       "id": "fullbright",
@@ -746,22 +722,10 @@ window.HELIX_CONFIG = {
       "description": "Hold a key to zoom in. Assign one in the module settings."
     },
     {
-      "id": "custom-crosshair",
-      "name": "Custom Crosshair",
-      "category": "Visuals",
-      "description": "Draws a configurable crosshair in place of the vanilla one."
-    },
-    {
       "id": "custom-glint",
       "name": "Custom Glint",
       "category": "Visuals",
       "description": "Recolours the enchantment glint and changes its speed and pattern size."
-    },
-    {
-      "id": "hit-particles",
-      "name": "Hit Particles",
-      "category": "Visuals",
-      "description": "Spawns particles where your hits land."
     },
     {
       "id": "target-esp",
@@ -774,12 +738,6 @@ window.HELIX_CONFIG = {
       "name": "Totem Spirit",
       "category": "Visuals",
       "description": "A glowing ghost rises when a player pops a totem."
-    },
-    {
-      "id": "particles",
-      "name": "Particles",
-      "category": "Visuals",
-      "description": "Egyptian particles for totem pops, projectiles and footsteps."
     },
     {
       "id": "motion-blur",
@@ -798,30 +756,6 @@ window.HELIX_CONFIG = {
       "name": "Color Grading",
       "category": "Visuals",
       "description": "Adds color, contrast and a vignette to the world."
-    },
-    {
-      "id": "jump-circles",
-      "name": "Jump Circles",
-      "category": "Visuals",
-      "description": "Draws a fading Helix ring where you jump."
-    },
-    {
-      "id": "pharaoh-headdress",
-      "name": "Pharaoh Headdress",
-      "category": "Visuals",
-      "description": "Puts a pharaoh headdress on your player model."
-    },
-    {
-      "id": "character-3d",
-      "name": "3D Character",
-      "category": "Visuals",
-      "description": "Replaces your player model with a 3D character."
-    },
-    {
-      "id": "floating-relics",
-      "name": "Floating Relics",
-      "category": "Visuals",
-      "description": "Egyptian symbols float and spin around you."
     },
     {
       "id": "time-changer",
@@ -908,6 +842,18 @@ window.HELIX_CONFIG = {
       "description": "Keeps the /sell menu open and keeps selling everything that is not on your Never Sell list."
     },
     {
+      "id": "desert-sand-farmer",
+      "name": "Desert Sand Farmer",
+      "category": "Donut",
+      "description": "Mines the sand around you with your best shovel and sells it when the inventory fills up."
+    },
+    {
+      "id": "auto-dig-out-area",
+      "name": "Auto Dig Out Area",
+      "category": "Macro",
+      "description": "Mines a rotated cuboid with a normal or 3x3 pickaxe."
+    },
+    {
       "id": "tp-macro",
       "name": "Tp Macro",
       "category": "Macro",
@@ -930,12 +876,18 @@ window.HELIX_CONFIG = {
       "name": "AH Sniper",
       "category": "Macro",
       "description": "Refreshes the AH and instantly buys your item below your price, with optional auto selling."
+    },
+    {
+      "id": "self-destruct",
+      "name": "Self Destruct",
+      "category": "Helix Client",
+      "description": "Closes the ClickGUI and turns every module and the HUD off. Your configuration comes back on the next launch."
     }
   ],
   "faq": [
     [
       "What is Helix Client?",
-      "Helix is a customizable Minecraft client with 134 modules across nine categories, including Combat, Movement, Render, Visuals and Macro."
+      "Helix is a customizable Minecraft client with 126 modules across nine categories, including Combat, Movement, Render, Visuals and Macro."
     ],
     [
       "How do I get Helix?",
@@ -983,7 +935,7 @@ window.HELIX_CONFIG = {
       "description": "A quiet HUD. A clear perspective.",
       "modules": [
         "HUD",
-        "Custom Crosshair",
+        "Hotkeys",
         "Radar"
       ]
     },
@@ -1044,7 +996,7 @@ window.HELIX_CONFIG = {
       "modules": [
         "HUD",
         "Custom Glint",
-        "Hit Particles"
+        "Totem Spirit"
       ]
     }
   ],
@@ -1123,23 +1075,23 @@ window.HELIX_CONFIG = {
       "heroBefore": "The Best",
       "heroEmphasis": "Client",
       "heroAfter": "there is.",
-      "lead": "A customizable Minecraft client built around the way you play. 134 modules. Your setup. Your rules.",
+      "lead": "A customizable Minecraft client built around the way you play. 126 modules. Your setup. Your rules.",
       "heroButton": "Get Helix",
       "secondaryButton": "Join Discord",
       "featureTitle": "One menu for",
       "featureEmphasis": "your playstyle.",
-      "featureLead": "134 modules across nine categories. Combat, movement, rendering, visuals, macros and more.",
+      "featureLead": "126 modules across nine categories. Combat, movement, rendering, visuals, macros and more.",
       "specialLabel": "Uniquely yours",
       "special": [
         "Custom HUD",
-        "134 modules",
+        "126 modules",
         "Personal themes"
       ],
       "marquee": [
         "HUD",
         "Zoom",
         "Auto Crystal",
-        "134 modules",
+        "126 modules",
         "Combat",
         "Movement",
         "Render",
@@ -1177,7 +1129,7 @@ window.HELIX_CONFIG = {
     "heroTitle": "The Best Client",
     "heroAccent": "there is.",
     "heroLead": "A customizable Minecraft client built around the way you play.",
-    "heroHighlight": "134 modules. Your setup. Your rules.",
+    "heroHighlight": "126 modules. Your setup. Your rules.",
     "heroNote": "License access · Connected with Discord",
     "conceptEyebrow": "YOUR SETUP. YOUR RULES.",
     "conceptLabel": "INTERFACE CONCEPT",
@@ -1195,7 +1147,7 @@ window.HELIX_CONFIG = {
     "featuresEyebrow": "ONE CLIENT. YOUR ENTIRE PLAYSTYLE.",
     "featuresTitle": "So many possibilities.",
     "featuresAccent": "One place.",
-    "featuresLead": "134 modules across nine categories. Combat, movement, rendering, visuals, macros and more.",
+    "featuresLead": "126 modules across nine categories. Combat, movement, rendering, visuals, macros and more.",
     "whyEyebrow": "BUILT AROUND YOU",
     "whyTitle": "Why choose",
     "whyAccent": "Helix?",
@@ -1292,7 +1244,7 @@ window.HELIX_CONFIG = {
     "catalogTitle": "Find your",
     "catalogAccent": "advantage.",
     "catalogLead": "Explore the Helix modules. Search, filter, and find what fits your playstyle.",
-    "catalogNotice": "134 modules across nine categories.",
+    "catalogNotice": "126 modules across nine categories.",
     "downloadsTitle": "Your next",
     "downloadsAccent": "adventure.",
     "downloadsLead": "Download the Helix injector and get straight into your game.",
