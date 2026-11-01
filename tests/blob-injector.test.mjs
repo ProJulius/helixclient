@@ -37,6 +37,26 @@ test('chunked oversized callback requests are rejected before parsing or SDK cal
   assert.equal(result.status, 413);
 });
 
+test('the delegated uploader gets only release-scoped Blob tokens and cannot bypass origin checks', async () => {
+  const user = { id: '1280146743236890769' };
+  const body = { type: 'blob.generate-client-token', payload: { pathname: 'injector/releases/12345678-1234-1234-1234-123456789012/Helix.exe', clientPayload: '{"version":"1.0.0"}', multipart: true } };
+  const result = await blobInjectorUpload(request(body), env, async () => user);
+  assert.equal(result.status, 200);
+  const data = await result.json();
+  assert.match(data.clientToken, /^vercel_blob_client_/);
+  assert.equal(JSON.stringify(data).includes(env.BLOB_READ_WRITE_TOKEN), false);
+  for (const pathname of ['injector/latest.json', '../Helix.exe', 'other/files/Helix.exe', 'injector/releases/12345678-1234-1234-1234-123456789012/index.html']) {
+    const denied = await blobInjectorUpload(request({ ...body, payload: { ...body.payload, pathname } }), env, async () => user);
+    assert.equal(denied.status, 403);
+  }
+  const foreign = request(body);
+  foreign.headers.set('origin', 'https://evil.example');
+  assert.equal((await blobInjectorUpload(foreign, env, async () => user)).status, 403);
+  const forged = request({ type: 'blob.upload-completed', payload: { blob: { pathname: body.payload.pathname }, tokenPayload: JSON.stringify({ adminId: user.id }) } });
+  forged.headers.set('x-vercel-signature', 'invalid-signature');
+  assert.equal((await blobInjectorUpload(forged, env, async () => user)).status, 403);
+});
+
 test('spoofing a callback header cannot obtain a client token as a regular user', async () => {
   const req = request({ type: 'blob.generate-client-token', payload: { pathname: 'injector/releases/12345678-1234-1234-1234-123456789012/Helix.exe' } });
   req.headers.set('x-vercel-signature', 'not-a-real-signature');

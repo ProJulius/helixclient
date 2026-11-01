@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createInjectorService, r2InjectorStorage, INJECTOR_ADMIN_ID, INJECTOR_MAX_BYTES } from '../lib/injector-service.mjs';
+import { createInjectorService, r2InjectorStorage, canUploadInjector, INJECTOR_ADMIN_ID, INJECTOR_MAX_BYTES } from '../lib/injector-service.mjs';
 import { createDiscordService } from '../lib/discord-service.mjs';
 
 const origin = 'https://helix.example';
 const env = { SITE_ORIGIN: origin, ADMIN_DISCORD_ID: INJECTOR_ADMIN_ID };
+const uploaderId = '1280146743236890769';
 const request = (path = '', init = {}) => new Request(origin + '/api/injector' + path, init);
 function fixture(id = INJECTOR_ADMIN_ID) {
   let saved = null;
@@ -37,6 +38,35 @@ test('non-admin accounts may see availability but cannot upload', async () => {
   const f = fixture('123456789012345678');
   assert.equal((await (await f.service.handle(request(), env)).json()).canUpload, false);
   assert.equal((await f.service.handle(upload(), env)).status, 403);
+});
+
+test('injector upload permission preserves the configured owner and matches exact Discord IDs', () => {
+  const configured = { ...env, ADMIN_DISCORD_ID: '234567890123456789' };
+  assert.equal(canUploadInjector(env, { id: INJECTOR_ADMIN_ID }), true);
+  assert.equal(canUploadInjector(configured, { id: configured.ADMIN_DISCORD_ID }), true);
+  assert.equal(canUploadInjector(configured, { id: INJECTOR_ADMIN_ID }), false);
+  assert.equal(canUploadInjector(configured, { id: uploaderId }), true);
+  assert.equal(canUploadInjector(env, { id: uploaderId }), true);
+  for (const id of [undefined, null, Number(uploaderId), ' ' + uploaderId, uploaderId + '0', '123456789012345678']) {
+    assert.equal(canUploadInjector(env, { id }), false);
+  }
+  assert.equal(canUploadInjector(env, null), false);
+  assert.equal(env.ADMIN_DISCORD_ID, INJECTOR_ADMIN_ID);
+});
+
+test('the delegated uploader can publish but remains subject to origin and file restrictions', async () => {
+  const f = fixture(uploaderId);
+  assert.equal((await (await f.service.handle(request(), env)).json()).canUpload, true);
+  assert.equal((await f.service.handle(upload(), env)).status, 200);
+  assert.equal(await (await f.service.handle(request('/download'), env)).text(), 'example-release');
+  assert.equal((await f.service.handle(upload({ Origin: 'https://evil.example' }), env)).status, 403);
+  assert.equal((await f.service.handle(upload({ 'X-Injector-Filename': '../file.exe' }), env)).status, 400);
+  assert.equal((await f.service.handle(upload({ 'Content-Length': String(INJECTOR_MAX_BYTES + 1) }), env)).status, 413);
+});
+
+test('claiming the delegated uploader ID in headers does not grant upload permission', async () => {
+  const f = fixture('123456789012345678');
+  assert.equal((await f.service.handle(upload({ 'x-discord-id': uploaderId, 'oai-authenticated-user-id': uploaderId }), env)).status, 403);
 });
 test('cross-origin uploads are rejected even for the administrator', async () => {
   assert.equal((await fixture().service.handle(upload({ Origin: 'https://evil.example' }), env)).status, 403);
