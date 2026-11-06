@@ -71,6 +71,11 @@ test('Vercel static responses and function responses share the same security pol
   }
 }));
 
+test('AFK links rewrite through the server API for URL lookup and redirect', () => {
+  const config = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+  assert.ok(config.rewrites.some(route => route.source === '/api/afk/:action' && route.destination === '/api?__afk_action=:action'));
+});
+
 test('injector rewrite fails closed on invalid production origin', () => configured(async () => {
   process.env.SITE_ORIGIN = origin + '/path';
   const result = await handler.fetch(new Request(origin + '/api?__injector_action=status'));

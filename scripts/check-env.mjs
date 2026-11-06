@@ -15,5 +15,6 @@ for (const [name, validate] of Object.entries(checks)) {
   if (!valid) failed = true;
 }
 if (process.env.ADMIN_DISCORD_ID && !/^\d{17,20}$/.test(process.env.ADMIN_DISCORD_ID)) { console.log('ADMIN_DISCORD_ID: INVALID'); failed = true; }
+if (process.env.AFK_GITHUB_TOKEN && process.env.AFK_GITHUB_TOKEN.length < 20) { console.log('AFK_GITHUB_TOKEN: INVALID'); failed = true; }
 console.log('This validates formats, not credential authenticity or secret entropy.');
 if (failed) process.exitCode = 1;

@@ -21,6 +21,7 @@
     { "source": "/api/:path*", "headers": [{ "key": "Cache-Control", "value": "private, no-store" }] }
   ],
   "rewrites": [
+    { "source": "/api/afk/:action", "destination": "/api?__afk_action=:action" },
     { "source": "/api/injector", "destination": "/api?__injector_action=status" },
     { "source": "/api/injector/:action", "destination": "/api?__injector_action=:action" },
     { "source": "/api/discord/:action", "destination": "/api?__discord_action=:action" }

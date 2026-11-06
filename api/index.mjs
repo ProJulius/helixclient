@@ -1,10 +1,12 @@
 import { createDiscordService } from '../lib/discord-service.mjs';
 import { createInjectorService } from '../lib/injector-service.mjs';
 import { blobInjectorStorage, blobInjectorUpload } from '../lib/blob-injector.mjs';
+import { createAfkUrlService } from '../lib/afk-url.mjs';
 import { createApiGuard, withSecurityHeaders } from '../lib/security.mjs';
 
 const discord = createDiscordService();
 const injector = createInjectorService({ getAccount: discord.getAccount, getStorage: blobInjectorStorage });
+const afkUrl = createAfkUrlService();
 const actions = new Set(['community', 'session', 'login', 'callback', 'logout']);
 const guard = createApiGuard({ platform: 'vercel', getAccount: discord.getAccount });
 
@@ -18,6 +20,15 @@ export default {
 
 async function dispatch(request) {
     const url = new URL(request.url);
+    const afkAction = url.searchParams.get('__afk_action') || url.pathname.match(/^\/api\/afk\/(url|redirect)$/)?.[1];
+    if (afkAction) {
+      if (!['url', 'redirect'].includes(afkAction)) return Response.json({ error: 'Not found.' }, { status: 404 });
+      url.searchParams.delete('__afk_action');
+      url.pathname = '/api/afk/' + afkAction;
+      const forwarded = new Request(url, request);
+      const blocked = await guard(forwarded, process.env);
+      return blocked || afkUrl.handle(forwarded, process.env);
+    }
     const injectorAction = url.searchParams.get('__injector_action') || (url.pathname === '/api/injector' ? 'status' : url.pathname.match(/^\/api\/injector\/([a-z]+)$/)?.[1]);
     if (injectorAction) {
       if (!['status', 'upload', 'download'].includes(injectorAction)) return Response.json({ error: 'Not found.' }, { status: 404 });

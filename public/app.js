@@ -154,8 +154,9 @@
   function closeDialog() { $('#overlay').close(); }
 
   function renderHeader() {
-    const items = [{ id: 'features', label: language === 'de' ? 'Funktionen' : 'Features', href: '#features' }, { id: 'showcases', label: 'Showcases', href: '#/showcases' }, { id: 'reviews', label: language === 'de' ? 'Bewertungen' : 'Reviews', href: C.links.reviews }, { id: 'pricing', label: nav('pricing'), href: '#pricing' }, { id: 'discord', label: 'Discord', href: '#community', action: 'join-discord' }];
+    const items = [{ id: 'features', label: language === 'de' ? 'Funktionen' : 'Features', href: '#features' }, { id: 'showcases', label: 'Showcases', href: '#/showcases' }, { id: 'reviews', label: language === 'de' ? 'Bewertungen' : 'Reviews', href: C.links.reviews }, { id: 'pricing', label: nav('pricing'), href: '#pricing' }, { id: 'discord', label: 'Discord', href: '#community', action: 'join-discord' }, { id: 'afk', label: 'AFK', href: '/api/afk/redirect' }];
     $('#header').innerHTML = '<div class="navbar reference-navbar"><div class="nav-brand">' + brand() + '<div class="language"><button class="language-toggle" data-action="language-menu" aria-label="Language" aria-controls="language-menu" aria-expanded="false">' + esc(language.toUpperCase()) + icon('down') + '</button><div class="language-menu theme-menu" id="language-menu" hidden><div class="locale-options"><button data-language="en">EN · English</button><button data-language="de">DE · Deutsch</button></div><button class="theme-mobile-navigation" data-action="mobile-menu">Explore Helix →</button></div></div></div><nav class="navlinks" aria-label="Main navigation">' + items.map(i => '<a href="' + i.href + '" data-nav="' + i.id + '"' + (i.action ? ' data-action="' + i.action + '"' : '') + '>' + esc(i.label) + '</a>').join('') + '</nav><div class="nav-actions"><a class="button ghost small-btn" href="#/dashboard">' + icon('grid') + esc(nav('dashboard')) + '</a><a class="button primary small-btn" href="#pricing">' + esc(nav('get')) + icon('arrow') + '</a><button class="hamburger" data-action="mobile-menu" aria-label="Open navigation" aria-haspopup="dialog">' + icon('menu') + '</button></div></div>';
+    window.HelixAfkLink?.apply($('#header'));
     $('.navbar').lang = language;
   }
   function renderFooter() {
@@ -371,7 +372,7 @@
       case 'close-dialog': closeDialog(); break;
       case 'global-search': searchPalette(); break;
       case 'language-menu': { const menu = $('#language-menu'); menu.hidden = !menu.hidden; el.setAttribute('aria-expanded', String(!menu.hidden)); break; }
-      case 'mobile-menu': openDialog('Your Helix.', `<nav class="mobile-nav" aria-label="Mobile navigation">${['home', 'modules', 'pricing', 'downloads', 'faq', 'dashboard'].map(k => `<a href="${k === 'home' ? '#home' : `#/${k}`}">${esc(nav(k))}</a>`).join('')}<a href="#/showcases">Showcases</a></nav>`); break;
+      case 'mobile-menu': openDialog('Your Helix.', `<nav class="mobile-nav" aria-label="Mobile navigation">${['home', 'modules', 'pricing', 'downloads', 'faq', 'dashboard'].map(k => `<a href="${k === 'home' ? '#home' : `#/${k}`}">${esc(nav(k))}</a>`).join('')}<a href="#/showcases">Showcases</a><a href="/api/afk/redirect">AFK</a></nav>`); break;
       case 'all-reviews': showAllReviews = !showAllReviews; $('#review-content').innerHTML = reviewSection(); break;
       case 'checkout': beginCheckout(); break;
       case 'connect-discord': beginDiscordLogin(); break;

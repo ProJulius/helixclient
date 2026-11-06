@@ -54,6 +54,15 @@ test('API guard rejects foreign origins and methods without interfering with OAu
   assert.equal((await guard(request('/api/discord/session'), { SITE_ORIGIN: origin + '/bad' })).status, 503);
 });
 
+test('AFK URL polling is same-origin GET-only and rate-limited', async () => {
+  const guard = createApiGuard({ platform: 'vercel' });
+  const poll = () => request('/api/afk/url', { headers: { Origin: origin, 'x-vercel-forwarded-for': '192.0.2.40' } });
+  assert.equal((await guard(request('/api/afk/url', { method: 'POST' }), env)).status, 405);
+  assert.equal((await guard(request('/api/afk/url', { headers: { Origin: 'https://evil.example' } }), env)).status, 403);
+  for (let i = 0; i < 120; i++) assert.equal(await guard(poll(), env), null);
+  assert.equal((await guard(poll(), env)).status, 429);
+});
+
 test('rate-limit state is bounded and expired keys can be reused', async () => {
   let time = 0;
   const guard = createApiGuard({ platform: 'sites', maxKeys: 2, now: () => time });
